@@ -95,3 +95,18 @@ def transform_text(text):
 
 df['transformed_text']=df['text'].apply(transform_text)
 print(df.head(5))
+
+#counting the top 30 ham and spam keywords
+ham_corpus=[]
+for msg in df[df['target']==0]['transformed_text'].tolist():
+    for word in msg.split():
+        ham_corpus.append(word)
+from collections import Counter
+print(Counter(ham_corpus).most_common(30))
+
+spam_corpus=[]
+for msg in df[df['target']==1]['transformed_text'].tolist():
+    for word in msg.split():
+        spam_corpus.append(word)
+from collections import Counter
+print(Counter(spam_corpus).most_common(30))
