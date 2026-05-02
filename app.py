@@ -31,20 +31,8 @@ def transform_text(text):
     for i in text:
         y.append(ps.stem(i))
     return " ".join(y)
-# result=None
-# if st.button('Predict'):
-#     transformed_sms=transform_text(input_sms)
 
-#     vectorization=tfidf.transform([transformed_sms])
-
-#     result=model.predict(vectorization)[0]
-
-
-#     if result==1:
-#         st.header("spam")
-#     else:
-#         st.header("Not Spam")
-result = None  # define it first
+result = None  
 
 if st.button('Predict'):
     transformed_sms = transform_text(input_sms)
