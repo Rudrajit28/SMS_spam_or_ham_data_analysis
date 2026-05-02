@@ -38,7 +38,7 @@ print(df.value_counts(['target']))
 #pie chart
 import matplotlib.pyplot as plt
 plt.pie(df.value_counts(['target']),labels=['ham','spam'],autopct="%0.2f")
-#plt.show()
+plt.show()
 
 import nltk    #natural language toolkit
 nltk.download('punkt_tab')
@@ -60,11 +60,12 @@ import seaborn as sns
 #plotting histogram for spam and ham msgs
 sns.histplot(df[df['target']==0]['num_characters'])
 sns.histplot(df[df['target']==1]['num_characters'],color='red')
-#plt.show()
+plt.show()
 sns.pairplot(df,hue='target')
-#plt.show()
-sns.heatmap(df.corr(),annot=True)
+plt.show()
 
+
+#data preprocessing ->  lower case, tokenization, removing special characters, removing stop words and punctuations, stemming
 nltk.download('stopwords')
 from nltk.corpus import stopwords
 stopwords.words('english')
@@ -110,3 +111,53 @@ for msg in df[df['target']==1]['transformed_text'].tolist():
         spam_corpus.append(word)
 from collections import Counter
 print(Counter(spam_corpus).most_common(30))
+
+
+#MODEL BUILDING 
+#for ML we need to use numerical data to build models, so we use vectorization to change transformed_text to numbers
+from sklearn.feature_extraction.text import TfidfVectorizer
+tfidf=TfidfVectorizer()
+X = tfidf.fit_transform(df['text']).toarray()
+y=df['target'].values
+from sklearn.model_selection import train_test_split
+X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.2,random_state=2)
+# we are using naive bayes for this because naive bayes works better in textual data
+from sklearn.naive_bayes import GaussianNB,BernoulliNB,MultinomialNB
+from sklearn.metrics import accuracy_score,confusion_matrix,precision_score
+from sklearn.preprocessing import MinMaxScaler  #we using minmax scaler and not standard scaler because standard scaler gives negative values which are not compatible with naive bayes
+scaler=MinMaxScaler()
+X=scaler.fit_transform(X)
+
+gnb=GaussianNB()
+bnb=BernoulliNB()
+mnb=MultinomialNB()
+
+gnb.fit(X_train,y_train)
+y_pred1=gnb.predict(X_test)
+print("accuracy_score: ",accuracy_score(y_test,y_pred1))
+print("confusion_matrix: ",confusion_matrix(y_test,y_pred1))
+print("precision_score: ",precision_score(y_test,y_pred1))
+
+bnb.fit(X_train,y_train)
+y_pred2=bnb.predict(X_test)
+print("accuracy_score: ",accuracy_score(y_test,y_pred2))
+print("confusion_matrix: ",confusion_matrix(y_test,y_pred2))
+print("precision_score: ",precision_score(y_test,y_pred2))
+
+
+#here, we will use mnb because the precision score is better than the others(100%)
+mnb.fit(X_train,y_train)
+y_pred3=mnb.predict(X_test)
+print("accuracy_score: ",accuracy_score(y_test,y_pred3))
+print("confusion_matrix: ",confusion_matrix(y_test,y_pred3))
+print("precision_score: ",precision_score(y_test,y_pred3))
+
+
+import pickle
+#save model
+pickle.dump(mnb,open('model.pkl','wb'))
+#save vectorization
+pickle.dump(tfidf,open('vectorization.pkl','wb'))
+
+
+
