@@ -1,8 +1,6 @@
-streamlit
-scikit-learn
-nltk
-pandas
-numpy
-matplotlib
-seaborn
-string
+streamlit>=1.35.0
+scikit-learn==1.7.2
+nltk>=3.8.1
+pandas>=2.0.0
+numpy>=1.26.0
+ 
