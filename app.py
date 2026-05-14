@@ -4,6 +4,16 @@ import string
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
+import nltk
+import os
+
+# Download only if not already present
+@st.cache_resource
+def download_nltk_data():
+    nltk.download('punkt_tab')
+    nltk.download('stopwords')
+
+download_nltk_data()
 
 st.set_page_config(
     page_title="SMS Spam Detector",
