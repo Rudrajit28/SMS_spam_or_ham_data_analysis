@@ -13,8 +13,8 @@ st.set_page_config(
 
 @st.cache_resource
 def load_model():
-    tfidf = pickle.load(open('spam_classifier/vectorization.pkl', 'rb'))
-    model = pickle.load(open('spam_classifier/model.pkl', 'rb'))
+    tfidf = pickle.load(open('vectorization.pkl', 'rb'))
+    model = pickle.load(open('model.pkl', 'rb'))
     return tfidf, model
 
 tfidf, model = load_model()
